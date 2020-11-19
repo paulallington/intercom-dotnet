@@ -53,19 +53,23 @@ namespace Intercom.Clients
             return result.Result;
         }
 
-        public Contact Update (Contact contact)
+        public Contact Update (string id, ContactUpdate contact)
         {
+            if (contact == null) throw new ArgumentNullException(nameof(contact));
             if (contact == null) {
                 throw new ArgumentNullException (nameof(contact));
             }
 
-            if (String.IsNullOrEmpty(contact.id) && String.IsNullOrEmpty(contact.user_id))
-            {
-                throw new ArgumentException("you need to provide either 'id', 'user_id', 'email' to view a user.");
-            }
-
             ClientResponse<Contact> result = null;
-            result = Post<Contact> (contact);
+            String body = Serialize<ContactUpdate>(contact);
+            if (string.IsNullOrEmpty(id))
+            {
+                result = Post<Contact>(body);
+            }
+            else
+            {
+                result = Put<Contact>(body, resource: CONTACTS_RESOURCE + Path.DirectorySeparatorChar + id);
+            }
             return result.Result;
         }
 
@@ -91,8 +95,8 @@ namespace Intercom.Clients
 
             if (!String.IsNullOrEmpty (contact.id)) {
                 result = Get<Contact> (resource: CONTACTS_RESOURCE + Path.DirectorySeparatorChar + contact.id);
-            } else if (!String.IsNullOrEmpty (contact.user_id)) {
-                parameters.Add (Constants.USER_ID, contact.user_id);
+            } else if (!String.IsNullOrEmpty (contact.external_id)) {
+                parameters.Add (Constants.USER_ID, contact.external_id);
                 result = Get<Contact> (parameters: parameters);
             } else {
                 throw new ArgumentException ("you need to provide either 'contact.id', 'contact.user_id' to view a contact.");
@@ -163,8 +167,8 @@ namespace Intercom.Clients
 
             if (!String.IsNullOrEmpty (contact.id)) {
                 result = Delete<Contact> (resource: CONTACTS_RESOURCE + Path.DirectorySeparatorChar + contact.id);
-            } else if (!String.IsNullOrEmpty (contact.user_id)) {
-                parameters.Add (Constants.USER_ID, contact.user_id);
+            } else if (!String.IsNullOrEmpty (contact.external_id)) {
+                parameters.Add (Constants.USER_ID, contact.external_id);
                 result = Delete<Contact> (parameters: parameters);
             } else {
                 throw new ArgumentException ("you need to provide either 'contact.id', 'contact.user_id' to delete a contact.");
@@ -189,7 +193,7 @@ namespace Intercom.Clients
             if (contact == null)
                 throw new ArgumentNullException ("'contact' argument is null.");
 
-            if (String.IsNullOrEmpty (contact.id) && String.IsNullOrEmpty (contact.user_id))
+            if (String.IsNullOrEmpty (contact.id) && String.IsNullOrEmpty (contact.external_id))
                 throw new ArgumentException ("you need to provide either 'contact.id', 'contact.user_id' to convert a lead.");
 
             Dictionary<String, String> contactBody = new Dictionary<String, String> ();
@@ -197,7 +201,7 @@ namespace Intercom.Clients
             if (!String.IsNullOrEmpty (contact.id)) {
                 contactBody.Add ("id", contact.id);
             } else {
-                contactBody.Add ("user_id", contact.user_id);
+                contactBody.Add ("user_id", contact.external_id);
             }
 
             var body = new { contact = contactBody };
@@ -221,10 +225,10 @@ namespace Intercom.Clients
             if (user == null)
                 throw new ArgumentNullException ("'user' argument is null.");
 
-            if (String.IsNullOrEmpty (contact.id) && String.IsNullOrEmpty (contact.user_id))
+            if (String.IsNullOrEmpty (contact.id) && String.IsNullOrEmpty (contact.external_id))
                 throw new ArgumentException ("you need to provide either 'contact.id', 'contact.user_id' to convert a lead.");
 
-            if (String.IsNullOrEmpty (user.id) && String.IsNullOrEmpty (user.user_id) && String.IsNullOrEmpty (user.email))
+            if (String.IsNullOrEmpty (user.id) && String.IsNullOrEmpty (user.external_id) && String.IsNullOrEmpty (user.email))
                 throw new ArgumentException ("you need to provide either 'user.id', 'user.user_id', or 'user.email' to convert a lead.");
 
             Dictionary<String, String> contactBody = new Dictionary<String, String> ();
@@ -233,8 +237,8 @@ namespace Intercom.Clients
             if (!String.IsNullOrEmpty (user.id)) {
                 userBody.Add ("id", user.id);
             }
-            else if (!String.IsNullOrEmpty (user.user_id)) {
-                userBody.Add ("user_id", user.user_id);
+            else if (!String.IsNullOrEmpty (user.external_id)) {
+                userBody.Add ("user_id", user.external_id);
             }
             else {
                 userBody.Add ("email", user.email);
@@ -243,7 +247,7 @@ namespace Intercom.Clients
             if (!String.IsNullOrEmpty (contact.id)) {
                 contactBody.Add ("id", contact.id);
             } else {
-                contactBody.Add ("user_id", contact.user_id);
+                contactBody.Add ("user_id", contact.external_id);
             }
 
             var body = new { contact = contactBody, user = userBody };

@@ -80,9 +80,9 @@ namespace Intercom.Clients
             {
                 result = Get<Visitor>(resource: VISITORS_RESOURCE + Path.DirectorySeparatorChar + visitor.id);
             }
-            else if (!String.IsNullOrEmpty(visitor.user_id))
+            else if (!String.IsNullOrEmpty(visitor.external_id))
             {
-                parameters.Add(Constants.USER_ID, visitor.user_id);
+                parameters.Add(Constants.USER_ID, visitor.external_id);
                 result = Get<Visitor>(parameters: parameters);
             }
             else
@@ -100,7 +100,7 @@ namespace Intercom.Clients
                 throw new ArgumentNullException(nameof(visitor));
             }
 
-            if (String.IsNullOrEmpty(visitor.id) && String.IsNullOrEmpty(visitor.user_id))
+            if (String.IsNullOrEmpty(visitor.id) && String.IsNullOrEmpty(visitor.external_id))
             {
                 throw new ArgumentException("you need to provide either 'visitor.id', 'visitor.user_id' to update a visitor.");
             }
@@ -156,8 +156,8 @@ namespace Intercom.Clients
 
             if (!String.IsNullOrEmpty (user.id))
                 userBody = new { id = user.id };
-            else if (!String.IsNullOrEmpty (user.user_id))
-                userBody = new { user_id = user.user_id };
+            else if (!String.IsNullOrEmpty (user.external_id))
+                userBody = new { user_id = user.external_id };
             else if (!String.IsNullOrEmpty (user.email))
                 userBody = new { email = user.email };
             else
@@ -167,8 +167,8 @@ namespace Intercom.Clients
 
             if (!String.IsNullOrEmpty (visitor.id))
                 visitorBody = new { id = visitor.id};
-            else if (!String.IsNullOrEmpty (visitor.user_id))
-                visitorBody = new {user_id = visitor.user_id };
+            else if (!String.IsNullOrEmpty (visitor.external_id))
+                visitorBody = new {user_id = visitor.external_id };
             else if (!String.IsNullOrEmpty (visitor.email))
                 visitorBody = new { email = visitor.email };
             else
@@ -201,8 +201,8 @@ namespace Intercom.Clients
 
             if (!String.IsNullOrEmpty (visitor.id))
                 visitorBody = new { id = visitor.id };
-            else if (!String.IsNullOrEmpty (visitor.user_id))
-                visitorBody = new { user_id = visitor.user_id };
+            else if (!String.IsNullOrEmpty (visitor.external_id))
+                visitorBody = new { user_id = visitor.external_id };
             else if (!String.IsNullOrEmpty (visitor.email))
                 visitorBody = new { email = visitor.email };
             else

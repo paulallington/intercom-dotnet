@@ -8,9 +8,10 @@ namespace Intercom.Data
 {
 	public class User : Model
 	{
-		public string user_id { get; set; }
+		public string external_id { get; set; }
 		public string email { get; set; }
 		public string phone { get; set; }
+        public string role { get; set; }
 		public string name { get; set; }
 		public long? updated_at { get; set; }
 		public string last_seen_ip { get; set; }
@@ -47,7 +48,8 @@ namespace Intercom.Data
         public string last_seen_user_agent { get; set; }
 
 		public User()
-		{
-		}
+        {
+            role = "contact";
+        }
 	}
 }

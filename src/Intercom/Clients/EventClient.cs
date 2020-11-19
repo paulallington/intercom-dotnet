@@ -64,8 +64,8 @@ namespace Intercom.Clients
 
             if (!String.IsNullOrEmpty (user.id)) {
                 parameters.Add (Constants.INTERCOM_USER_ID, user.id);
-            } else if (!String.IsNullOrEmpty (user.user_id)) {
-                parameters.Add (Constants.USER_ID, user.user_id);
+            } else if (!String.IsNullOrEmpty (user.external_id)) {
+                parameters.Add (Constants.USER_ID, user.external_id);
             } else if (!String.IsNullOrEmpty (user.email)) {
                 parameters.Add (Constants.EMAIL, user.email);
 			} else {

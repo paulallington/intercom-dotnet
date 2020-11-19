@@ -24,7 +24,7 @@ namespace Intercom.Clients
             public const String signed_up_at = "signed_up_at";
         }
 
-        private const String USERS_RESOURCE = "users";
+        private const String USERS_RESOURCE = "contacts";
         private const String PERMANENT_DELETE_RESOURCE = "user_delete_requests";
 
         public UsersClient(RestClientFactory restClientFactory)
@@ -51,7 +51,7 @@ namespace Intercom.Clients
                 throw new ArgumentNullException(nameof(user));
             }
 
-            if (String.IsNullOrEmpty(user.user_id) && string.IsNullOrEmpty(user.email))
+            if (String.IsNullOrEmpty(user.external_id) && string.IsNullOrEmpty(user.email))
             {
                 throw new ArgumentException("you need to provide either 'user.user_id', 'user.email' to create a user.");
             }
@@ -68,13 +68,13 @@ namespace Intercom.Clients
                 throw new ArgumentNullException(nameof(user));
             }
 
-            if (String.IsNullOrEmpty(user.id) && String.IsNullOrEmpty(user.user_id) && string.IsNullOrEmpty(user.email))
+            if (String.IsNullOrEmpty(user.id) && String.IsNullOrEmpty(user.external_id) && string.IsNullOrEmpty(user.email))
             {
                 throw new ArgumentException("you need to provide either 'user.id', 'user.user_id', 'user.email' to update a user.");
             }
 
             ClientResponse<User> result = null;
-            result = Post<User>(Transform(user));
+            result = Put<User>(Transform(user));
             return result.Result;
         }
 
@@ -147,9 +147,9 @@ namespace Intercom.Clients
             {
                 result = Get<User>(resource: USERS_RESOURCE + Path.DirectorySeparatorChar + user.id);
             }
-            else if (!String.IsNullOrEmpty(user.user_id))
+            else if (!String.IsNullOrEmpty(user.external_id))
             {
-                parameters.Add(Constants.USER_ID, user.user_id);
+                parameters.Add(Constants.USER_ID, user.external_id);
                 result = Get<User>(parameters: parameters);
             }
             else if (!String.IsNullOrEmpty(user.email))
@@ -219,9 +219,9 @@ namespace Intercom.Clients
             {
                 result = Delete<User>(resource: USERS_RESOURCE + Path.DirectorySeparatorChar + user.id);
             }
-            else if (!String.IsNullOrEmpty(user.user_id))
+            else if (!String.IsNullOrEmpty(user.external_id))
             {
-                parameters.Add(Constants.USER_ID, user.user_id);
+                parameters.Add(Constants.USER_ID, user.external_id);
                 result = Delete<User>(parameters: parameters);
             }
             else if (!String.IsNullOrEmpty(user.email))
@@ -295,8 +295,8 @@ namespace Intercom.Clients
 
             if (!String.IsNullOrEmpty(user.id))
                 body = JsonConvert.SerializeObject(new { id = user.id, last_request_at = timestamp });
-            else if (!String.IsNullOrEmpty(user.user_id))
-                body = JsonConvert.SerializeObject(new { user_id = user.user_id, last_request_at = timestamp });
+            else if (!String.IsNullOrEmpty(user.external_id))
+                body = JsonConvert.SerializeObject(new { user_id = user.external_id, last_request_at = timestamp });
             else if (!String.IsNullOrEmpty(user.email))
                 body = JsonConvert.SerializeObject(new { email = user.email, last_request_at = timestamp });
             else
@@ -331,8 +331,8 @@ namespace Intercom.Clients
 
             if (!String.IsNullOrEmpty(user.id))
                 body = JsonConvert.SerializeObject(new { id = user.id, update_last_request_at = true });
-            else if (!String.IsNullOrEmpty(user.user_id))
-                body = JsonConvert.SerializeObject(new { user_id = user.user_id, update_last_request_at = true });
+            else if (!String.IsNullOrEmpty(user.external_id))
+                body = JsonConvert.SerializeObject(new { user_id = user.external_id, update_last_request_at = true });
             else if (!String.IsNullOrEmpty(user.email))
                 body = JsonConvert.SerializeObject(new { email = user.email, update_last_request_at = true });
             else
@@ -469,7 +469,7 @@ namespace Intercom.Clients
             var body = new
             {
                 id = user.id,
-                user_id = user.user_id,
+                user_id = user.external_id,
                 email = user.email,
                 phone = user.phone,
                 name = user.name,

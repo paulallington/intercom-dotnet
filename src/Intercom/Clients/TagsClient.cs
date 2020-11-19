@@ -181,30 +181,6 @@ namespace Intercom.Clients
             return result.Result;
         }
 
-        public Tag Tag(String name, List<User> users)
-        {
-            if (String.IsNullOrEmpty(name))
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
-            if (users == null)
-            {
-                throw new ArgumentNullException(nameof(users));
-            }
-
-            if (!users.Any())
-            {
-                throw new ArgumentException("'users' argument should include more than one user.");
-            }
-
-            ClientResponse<Tag> result = null;
-            String body = CreateBody(name, false, users: users);
-            result = Post<Tag>(body);
-
-            return result.Result;
-        }
-
         public Tag Tag(String name, List<Contact> contacts)
         {
             if (String.IsNullOrEmpty(name))
@@ -223,7 +199,7 @@ namespace Intercom.Clients
             }
 
             ClientResponse<Tag> result = null;
-            String body = CreateBody(name, false, contacts.ToList<User>());
+            String body = CreateBody(name, false, contacts.ToList<Contact>());
             result = Post<Tag>(body);
 
             return result.Result;
@@ -236,36 +212,9 @@ namespace Intercom.Clients
                 case EntityType.Company:
                     return Tag(name, ids.Select(id => new Company() { id = id }).ToList());
                 case EntityType.Contact:
-                    return Tag(name, ids.Select(id => new Contact() { id = id }).ToList());
-                case EntityType.User:
-                    return Tag(name, ids.Select(id => new User() { id = id }).ToList());
                 default:
-                    return Tag(name, ids.Select(id => new User() { id = id }).ToList());
+                    return Tag(name, ids.Select(id => new Contact() { id = id }).ToList());
             }
-        }
-
-        public Tag Untag(String name, List<User> users)
-        {
-            if (String.IsNullOrEmpty(name))
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
-            if (users == null)
-            {
-                throw new ArgumentNullException(nameof(users));
-            }
-
-            if (!users.Any())
-            {
-                throw new ArgumentException("'users' argument should include more than one user.");
-            }
-
-            ClientResponse<Tag> result = null;
-            String body = CreateBody(name, true, users: users);
-            result = Post<Tag>(body);
-
-            return result.Result;
         }
 
         public Tag Untag(String name, List<Company> companies)
@@ -312,7 +261,7 @@ namespace Intercom.Clients
 
 
             ClientResponse<Tag> result = null;
-            String body = CreateBody(name, true, contacts.ToList<User>());
+            String body = CreateBody(name, true, contacts.ToList<Contact>());
             result = Post<Tag>(body);
 
             return result.Result;
@@ -325,18 +274,15 @@ namespace Intercom.Clients
                 case EntityType.Company:
                     return Untag(name, ids.Select(id => new Company() { id = id }).ToList());
                 case EntityType.Contact:
-                    return Untag(name, ids.Select(id => new Contact() { id = id }).ToList());
-                case EntityType.User:
-                    return Untag(name, ids.Select(id => new User() { id = id }).ToList());
                 default:
-                    return Untag(name, ids.Select(id => new User() { id = id }).ToList());
+                    return Untag(name, ids.Select(id => new Contact() { id = id }).ToList());
             }
         }
 
-        private String CreateBody(String name, bool untag, List<User> users)
+        private String CreateBody(String name, bool untag, List<Contact> users)
         {
             foreach (var u in users)
-                if (String.IsNullOrEmpty(u.id) && String.IsNullOrEmpty(u.user_id) && string.IsNullOrEmpty(u.email))
+                if (String.IsNullOrEmpty(u.id) && String.IsNullOrEmpty(u.external_id) && string.IsNullOrEmpty(u.email))
                     throw new ArgumentException("you need to provide either 'user.id', 'user.user_id', 'user.email' to tag a user.");
 
             object tags = BuildTag(name, untag, users);
@@ -353,9 +299,9 @@ namespace Intercom.Clients
             return SerializeTag(tags);
         }
 
-        private object BuildTag(String name, bool untag, List<User> users)
+        private object BuildTag(String name, bool untag, List<Contact> users)
         {
-            return new { name = name, users = users.Select(u => new { id = u.id, user_id = u.user_id, email = u.email, untag = untag }) };
+            return new { name = name, users = users.Select(u => new { id = u.id, user_id = u.external_id, email = u.email, untag = untag }) };
         }
 
         private object BuildTag(String name, bool untag, List<Company> companies)

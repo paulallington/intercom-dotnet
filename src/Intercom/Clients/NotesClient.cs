@@ -51,8 +51,8 @@ namespace Intercom.Clients
 
             if (!String.IsNullOrEmpty(note.user.id))
                 u = new { id = note.user.id };
-            else if (!String.IsNullOrEmpty(note.user.user_id))
-                u = new { user_id = note.user.user_id };
+            else if (!String.IsNullOrEmpty(note.user.external_id))
+                u = new { user_id = note.user.external_id };
             else if (!String.IsNullOrEmpty(note.user.email))
                 u = new { email = note.user.email };
             else
@@ -103,8 +103,8 @@ namespace Intercom.Clients
 
             if (!String.IsNullOrEmpty(user.id))
                 u = new { id = user.id };
-            else if (!String.IsNullOrEmpty(user.user_id))
-                u = new { user_id = user.user_id };
+            else if (!String.IsNullOrEmpty(user.external_id))
+                u = new { user_id = user.external_id };
             else if (!String.IsNullOrEmpty(user.email))
                 u = new { email = user.email };
             else
@@ -162,9 +162,9 @@ namespace Intercom.Clients
                 parameters.Add(Constants.ID, user.id);
                 result = Get<Notes>(parameters: parameters);
             }
-            else if (!String.IsNullOrEmpty(user.user_id))
+            else if (!String.IsNullOrEmpty(user.external_id))
             {
-                parameters.Add(Constants.USER_ID, user.user_id);
+                parameters.Add(Constants.USER_ID, user.external_id);
                 result = Get<Notes>(parameters: parameters);
             }
             else if (!String.IsNullOrEmpty(user.email))

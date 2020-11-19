@@ -91,7 +91,7 @@ namespace Intercom.Data
                     throw new ArgumentException("you need to provide either 'id', 'user_id', 'email' to view a user.");
 
                 //Validate User required fields
-                if (user != null && String.IsNullOrEmpty(user.id) && String.IsNullOrEmpty(user.email) && String.IsNullOrEmpty(user.user_id))
+                if (user != null && String.IsNullOrEmpty(user.id) && String.IsNullOrEmpty(user.email) && String.IsNullOrEmpty(user.external_id))
                     throw new ArgumentException("you need to provide either 'id', 'user_id', 'email' to view a user.");
 
                 //Validate required types
@@ -102,7 +102,7 @@ namespace Intercom.Data
                 {
                     this.id = user.id;
                     this.email = user.email;
-                    this.user_id = user.user_id;
+                    this.user_id = user.external_id;
                 }
                 else
                 {
