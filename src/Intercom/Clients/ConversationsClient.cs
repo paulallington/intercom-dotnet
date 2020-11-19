@@ -42,6 +42,14 @@ namespace Intercom.Clients
         {
         }
 
+        public NewConversation Create(CreateConversation conversation)
+        {
+            ClientResponse<NewConversation> result = null;
+            String body = Serialize<CreateConversation>(conversation);
+            result = Post<NewConversation>(body, resource: CONVERSATIONS_RESOURCE);
+            return result.Result;
+        }
+
         public Conversation View(String id, bool? displayAsPlainText = null)
         {
             if (String.IsNullOrEmpty(id))
@@ -78,6 +86,19 @@ namespace Intercom.Clients
             ClientResponse<Conversations> result = null;
             result = Get<Conversations>(resource: CONVERSATIONS_RESOURCE, parameters: parameters);
             return result.Result;
+        }
+
+        public void MarkRead(string id)
+        {
+            if (String.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+
+            ClientResponse<Conversation> result = null;
+            String body = Serialize<ConversationRead>(new ConversationRead());
+            result = Put<Conversation>(body, resource: CONVERSATIONS_RESOURCE + Path.DirectorySeparatorChar + id);
         }
     }
 }
