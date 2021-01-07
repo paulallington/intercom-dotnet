@@ -21,7 +21,6 @@ namespace Intercom.Data
         public bool read { get; set; }
         public string state { get; set; }
         public int total_count { get; set; }
-        public ConversationMessage conversation_message { get; set; }
         [JsonConverter(typeof(ListJsonConverter))]
         public List<ConversationPart> conversation_parts { get; set; }
         [JsonConverter(typeof(ListJsonConverter))]
