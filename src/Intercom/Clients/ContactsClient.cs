@@ -263,4 +263,8 @@ namespace Intercom.Clients
             return result.Result;
         }
     }
+
+namespace Intercom.Clients
+    {
+    }
 }
