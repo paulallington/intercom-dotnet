@@ -88,7 +88,7 @@ namespace Intercom.Clients
                     NullValueHandling = NullValueHandling.Ignore
                 });
 
-            result = Post<Note>(b);
+            result = Post<Note>(resource: "/contacts" + Path.DirectorySeparatorChar + note.user.id +"/notes" ,body: b);
             return result.Result;
         }
 
@@ -130,6 +130,7 @@ namespace Intercom.Clients
                     NullValueHandling = NullValueHandling.Ignore
                 });
 
+            result = Post<Note>(resource: "/contacts/" + Path.DirectorySeparatorChar + u + Path.DirectorySeparatorChar + NOTES_RESOURCE, body:b);
             result = Post<Note>(b);
 
             return result.Result;
@@ -143,7 +144,7 @@ namespace Intercom.Clients
             }
 
             ClientResponse<Note> result = null;
-            result = Get<Note>(resource: NOTES_RESOURCE + Path.DirectorySeparatorChar + id);
+            result = Get<Note>(resource: "/contacts/" + Path.DirectorySeparatorChar + id + Path.DirectorySeparatorChar + NOTES_RESOURCE);
             return result.Result;       
         }
 
