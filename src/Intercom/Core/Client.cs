@@ -416,4 +416,19 @@ namespace Intercom.Core
             }
         }
     }
+    public class Error
+    {
+        public string code { get; set; }
+        public string message { get; set; }
+    }
+
+    public class ApiError
+    {
+        public string type { get; set; }
+        public string request_id { get; set; }
+        public List<Error> errors { get; set; }
+    }
+
+
+
 }
